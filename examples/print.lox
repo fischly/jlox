@@ -1,0 +1,9 @@
+
+/* comment */
+print "Hello World!";
+
+/* line 1
+line2 üäö
+*/
+
+print "test";
