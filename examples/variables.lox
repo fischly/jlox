@@ -1,13 +1,14 @@
-var a = 3;
-var b = 4;
-var c = 2;
 
+
+var a = 1;
 {
-    var a = 13337;
-    print a;
-    a = 123213123;
+  var a = a + 2;
+  print a;
 }
 
-b = 2 * c + a + b/2;
-
-print 2*b;
+if (a == 2 and a == 1) {
+    print "YEEES";
+    print "a = ";
+    print a;
+}
+else print "NOOO";

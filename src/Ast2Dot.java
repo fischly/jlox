@@ -107,6 +107,21 @@ public class Ast2Dot implements Expr.Visitor<String> {
                 expr.value.accept(this);
     }
 
+    @Override
+    public String visitLogicalExpr(Expr.Logical expr) {
+        String nodeName = getNodeName(expr);
+        String leftNodeName = getNodeName(expr.left);
+        String rightNodeName = getNodeName(expr.right);
+
+        return "\n"+
+                nodeName + " [label=\"" + expr.operator.lexeme + "\"];\n" +
+                nodeName + " -> " + leftNodeName + ";\n" +
+                nodeName + " -> " + rightNodeName + ";\n\n" +
+                expr.left.accept(this) +
+                expr.right.accept(this);
+    }
+
+
     private Map<Expr, String> nodeNames = new HashMap<>();
     private int nodeCounter = 0;
 
