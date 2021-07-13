@@ -88,6 +88,24 @@ public class Ast2Dot implements Expr.Visitor<String> {
                 expr.right.accept(this);
     }
 
+    @Override
+    public String visitVariableExpr(Expr.Variable expr) {
+        String nodeName = getNodeName(expr);
+
+        return "\n" +
+                nodeName + " [label=\"var " + expr.name.lexeme + "\"];\n";
+    }
+
+    @Override
+    public String visitAssignExpr(Expr.Assign expr) {
+        String nodeName = getNodeName(expr);
+        String valueNodeName = getNodeName(expr.value);
+
+        return "\n" +
+                nodeName + " [label=\"" + expr.name.lexeme + " = \"];\n" +
+                nodeName + " -> " + valueNodeName + "\n\n" +
+                expr.value.accept(this);
+    }
 
     private Map<Expr, String> nodeNames = new HashMap<>();
     private int nodeCounter = 0;
