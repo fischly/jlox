@@ -5,6 +5,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Lox {
     private static final Interpreter interpreter = new Interpreter();
@@ -51,6 +52,10 @@ public class Lox {
         List<Token> tokens = scanner.scanTokens();
         Parser parser = new Parser(tokens);
         List<Stmt> statements = parser.parse();
+
+//        List<Stmt> collected = statements.stream().filter(stmt -> stmt instanceof Stmt.Expression).collect(Collectors.toList());
+        System.out.println(new Ast2Dot().print(statements.get(0)));
+        System.out.println("--------------");
 
         if (hadError) return;
 
