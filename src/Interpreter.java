@@ -1,10 +1,13 @@
-import java.io.ObjectInputStream;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     final Environment globals = new Environment();
     private Environment environment = globals;
+    private final Map<Expr, Integer> locals = new HashMap<>();
 
     public Interpreter() {
         NativeFunctions.addNativeFunctions(globals);
@@ -106,13 +109,28 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Object visitVariableExpr(Expr.Variable expr) {
-        return environment.get(expr.name);
+        return lookUpVariable(expr.name, expr);
+    }
+
+    private Object lookUpVariable(Token name, Expr expr) {
+        Integer distance = locals.get(expr);
+        if (distance != null) {
+            return environment.getAt(distance, name.lexeme);
+        } else {
+            return globals.get(name);
+        }
     }
 
     @Override
     public Object visitAssignExpr(Expr.Assign expr) {
         Object value = evaluate(expr.value);
-        environment.assign(expr.name, value);
+
+        Integer distance = locals.get(expr);
+        if (distance != null) {
+            environment.assignAt(distance, expr.name, value);
+        } else {
+            globals.assign(expr.name, expr);
+        }
 
         return value;
     }
@@ -232,6 +250,10 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         } finally {
             this.environment = previous;
         }
+    }
+
+    void resolve(Expr expr, int depth) {
+        locals.put(expr, depth);
     }
 
     /* ======= UTIL ====== */

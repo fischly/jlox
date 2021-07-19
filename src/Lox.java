@@ -59,8 +59,13 @@ public class Lox {
 
         if (hadError) return;
 
+        Resolver resolver = new Resolver(interpreter);
+        resolver.resolve(statements);
+
         // creates AST dot file
 //        System.out.println(new Ast2Dot().print(expression));
+
+        if (hadError) return;
 
         interpreter.interpret(statements);
     }
